@@ -1,9 +1,8 @@
 // pages/index.tsx
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { generateText } from 'ai';
-import { registry } from './registry';
 import ModelSelectionForm from '@/components/ModelSelectionForm'
 import PromptInputForm from '@/components/PromptInputForm'
 import EvaluationButton from '@/components/EvaluationButton'
@@ -36,8 +35,24 @@ export default function Home() {
   const [selectedModels, setSelectedModels] = useState<Model[]>([]);
   const [prompts, setPrompts] = useState<string[]>([]);
   const [results, setResults] = useState<EvaluationResult[]>([]);
+  const [registry, setRegistry] = useState<any>(null);
+
+  useEffect(() => {
+    const loadRegistry = async () => {
+      try {
+        const { registry } = await import('./registry.local');
+        setRegistry(registry);
+      } catch (error) {
+        const { registry } = await import ('./registry');
+        setRegistry(registry);
+      }
+    };
+    loadRegistry();
+  }, []);
 
   const handleEvaluate = async () => {
+    if (!registry) return;
+
     const newResults: EvaluationResult[] = [];
 
     for (const prompt of prompts) {
@@ -64,6 +79,8 @@ export default function Home() {
 
     setResults(newResults);
   };
+
+  if (!registry) return <div>Loading...</div>
 
   return (
     <main className="container mx-auto p-4">
