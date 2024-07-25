@@ -27,7 +27,7 @@ export default function PromptInputForm({ prompts, onPromptsChange }: PromptInpu
       <h2 className="text-xl font-semibold">Enter Prompts</h2>
       <Textarea 
         placeholder="Enter your prompt here..." 
-        className="min-h-[100px]" 
+        className="min-h-[70px]" 
         value={currentPrompt}
         onChange={(e) => setCurrentPrompt(e.target.value)}
       />

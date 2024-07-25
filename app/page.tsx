@@ -7,6 +7,7 @@ import ModelSelectionForm from '@/components/ModelSelectionForm'
 import PromptInputForm from '@/components/PromptInputForm'
 import EvaluationButton from '@/components/EvaluationButton'
 import ResultsTable from '@/components/ResultsTable'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export type Provider = 'openai' | 'groq';
 
@@ -36,6 +37,8 @@ export default function Home() {
   const [prompts, setPrompts] = useState<string[]>([]);
   const [results, setResults] = useState<EvaluationResult[]>([]);
   const [registry, setRegistry] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadRegistry = async () => {
@@ -52,39 +55,52 @@ export default function Home() {
 
   const handleEvaluate = async () => {
     if (!registry) return;
+    setIsLoading(true);
+    setError(null);
 
-    const newResults: EvaluationResult[] = [];
+    try {
+      const newResults: EvaluationResult[] = [];
 
-    for (const prompt of prompts) {
-      const promptResult: EvaluationResult = {
-        prompt,
-        results: {}
-      };
+      for (const prompt of prompts) {
+        const promptResult: EvaluationResult = {
+          prompt,
+          results: {}
+        };
 
-      for (const model of selectedModels) {
-        try {
-          const { text } = await generateText({
-            model: registry.languageModel(`${model.provider}:${model.id}`),
-            prompt: prompt,
-          });
-          promptResult.results[model.id] = text;
-        } catch (error) {
-          console.error(`Error with model ${model.id}:`, error);
-          promptResult.results[model.id] = 'Error occurred';
+        for (const model of selectedModels) {
+          try {
+            const { text } = await generateText({
+              model: registry.languageModel(`${model.provider}:${model.id}`),
+              prompt: prompt,
+            });
+            promptResult.results[model.id] = text;
+          } catch (error) {
+            console.error(`Error with model ${model.id}:`, error);
+            promptResult.results[model.id] = 'Error occurred';
+          }
         }
+
+        newResults.push(promptResult);
       }
 
-      newResults.push(promptResult);
+      setResults(newResults);
+    } catch (error) {
+      setError('An error occured during evaluation. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-
-    setResults(newResults);
   };
 
-  if (!registry) return <div>Loading...</div>
+  if (!registry) return <div>Loading registry...</div>
 
   return (
     <main className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">LLM Evaluations</h1>
+      {error && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
       <div className="space-y-6">
         <div className="flex flex-row w-full border p-4">
           <div className="flex flex-col w-1/2 pr-4">
@@ -93,14 +109,14 @@ export default function Home() {
               selectedModels={selectedModels}
               onModelSelectionChange={setSelectedModels}
             />
-            <EvaluationButton onEvaluate={handleEvaluate} />
+            <EvaluationButton onEvaluate={handleEvaluate} isLoading={isLoading} />
           </div>
           <PromptInputForm
             prompts={prompts}
             onPromptsChange={setPrompts}
           />
         </div>
-        <ResultsTable results={results} selectedModels={selectedModels} />
+        <ResultsTable results={results} selectedModels={selectedModels} isLoading={isLoading} />
       </div>
     </main>
   )

@@ -1,6 +1,7 @@
 // components/ResultsTable.tsx
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Model } from '../hooks/useMultiProviderChat'
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface ResultsTableProps {
   results: Array<{
@@ -10,10 +11,11 @@ interface ResultsTableProps {
     }
   }>
   selectedModels: Model[]
+  isLoading: boolean
 }
 
-export default function ResultsTable({ results, selectedModels }: ResultsTableProps) {
-  if (results.length === 0) {
+export default function ResultsTable({ results, selectedModels, isLoading }: ResultsTableProps) {
+  if (results.length === 0 && !isLoading) {
     return null
   }
 
@@ -31,14 +33,26 @@ export default function ResultsTable({ results, selectedModels }: ResultsTablePr
           </TableRow>
         </TableHeader>
         <TableBody>
-          {results.map((result, index) => (
-            <TableRow key={index}>
-              <TableCell className="font-medium">{result.prompt}</TableCell>
-              {selectedModels.map((model) => (
-                <TableCell key={model.id}>{result.results[model.id]}</TableCell>
-              ))}
+          {isLoading ? (
+            <TableRow>
+              <TableCell colSpan={selectedModels.length + 1}>
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-full" />
+                </div>
+              </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            results.map((result, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{result.prompt}</TableCell>
+                {selectedModels.map((model) => (
+                  <TableCell key={model.id}>{result.results[model.id]}</TableCell>
+                ))}
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>
