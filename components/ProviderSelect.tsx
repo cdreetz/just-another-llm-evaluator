@@ -17,7 +17,7 @@ export function ProviderSelect({ provider, model, onProviderChange, onModelChang
   return (
     <div className='space-y-2'>
       <Select onValueChange={onProviderChange} value={provider}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Select AI Provider" />
         </SelectTrigger>
         <SelectContent>
@@ -26,7 +26,7 @@ export function ProviderSelect({ provider, model, onProviderChange, onModelChang
         </SelectContent>
       </Select>
       <Select onValueChange={onModelChange} value={model}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Select Model" />
         </SelectTrigger>
         <SelectContent>
