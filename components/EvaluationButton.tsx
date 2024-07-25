@@ -7,7 +7,11 @@ interface EvaluationButtonProps {
 
 export default function EvaluationButton({ onEvaluate, isLoading }: EvaluationButtonProps) {
   return (
-    <Button onClick={onEvaluate} disabled={isLoading} className="m-2 w-1/2">
+    <Button 
+      onClick={onEvaluate} 
+      disabled={isLoading} 
+      className="m-2 w-full md:w-1/2 px-2 md:px-4 text-xs md:text-sm"
+    >
       {isLoading ? 'Evaluating...' : 'Run Evaluation'}
     </Button>
   )

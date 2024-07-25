@@ -23,7 +23,7 @@ export default function ModelSelectionForm({
   }
 
   return (
-    <div className="space-y-4 w-full">
+    <div className="space-y-4 w-full pb-2">
       <h2 className="text-xl font-semibold">Select Models</h2>
       {availableModels.map((model) => (
         <div key={model.id} className="flex items-center space-x-2">
@@ -32,7 +32,7 @@ export default function ModelSelectionForm({
             checked={selectedModels.some(m => m.id === model.id)}
             onCheckedChange={() => handleModelToggle(model)}
           />
-          <Label htmlFor={model.id}>{model.name} {model.provider}</Label>
+          <Label htmlFor={model.id} className="text-sm md:text-md">{model.name} {model.provider}</Label>
         </div>
       ))}
     </div>

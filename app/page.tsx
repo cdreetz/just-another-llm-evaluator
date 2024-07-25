@@ -95,7 +95,7 @@ export default function Home() {
         </Alert>
       )}
       <div className="space-y-6">
-        <div className="flex flex-row w-full border p-4">
+        <div className="flex flex-row w-full border p-4 space-x-2">
           <div className="flex flex-col w-1/2 pr-4">
             <ModelSelectionForm
               availableModels={AVAILABLE_MODELS}
