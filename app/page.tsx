@@ -2,7 +2,6 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { generateText } from 'ai';
 import ModelSelectionForm from '@/components/ModelSelectionForm'
 import PromptInputForm from '@/components/PromptInputForm'
 import EvaluationButton from '@/components/EvaluationButton'
