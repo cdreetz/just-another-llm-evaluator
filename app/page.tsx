@@ -17,7 +17,7 @@ export interface Model {
   provider: Provider;
 }
 
-export const AVAILABLE_MODELS: Model[] = [
+const AVAILABLE_MODELS: Model[] = [
   { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', provider: 'openai' },
   { id: 'gpt-4', name: 'GPT-4', provider: 'openai' },
   { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', provider: 'openai' },
