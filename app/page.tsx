@@ -40,21 +40,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadRegistry = async () => {
-      try {
-        const { registry } = await import('./registry.local');
-        setRegistry(registry);
-      } catch (error) {
-        const { registry } = await import ('./registry');
-        setRegistry(registry);
-      }
-    };
-    loadRegistry();
-  }, []);
-
   const handleEvaluate = async () => {
-    if (!registry) return;
     setIsLoading(true);
     setError(null);
 
@@ -69,11 +55,21 @@ export default function Home() {
 
         for (const model of selectedModels) {
           try {
-            const { text } = await generateText({
-              model: registry.languageModel(`${model.provider}:${model.id}`),
-              prompt: prompt,
+            const response = await fetch('/api/generate-text', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                model: `${model.provider}:${model.id}`,
+                prompt: prompt,
+              }),
             });
-            promptResult.results[model.id] = text;
+            if (!response.ok) {
+              throw new Error('API response was not ok');
+            }
+            const data = await response.json();
+            promptResult.results[model.id] = data.text;
           } catch (error) {
             console.error(`Error with model ${model.id}:`, error);
             promptResult.results[model.id] = 'Error occurred';
@@ -90,8 +86,6 @@ export default function Home() {
       setIsLoading(false);
     }
   };
-
-  if (!registry) return <div>Loading registry...</div>
 
   return (
     <main className="container mx-auto p-4">
