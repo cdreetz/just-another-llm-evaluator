@@ -9,7 +9,7 @@ import ResultsTable from '@/components/ResultsTable'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import InfoButton from '@/components/InfoButton';
 
-export type Provider = 'openai' | 'groq';
+export type Provider = 'openai' | 'groq' | 'anthropic';
 
 export interface Model {
   id: string;
@@ -28,6 +28,9 @@ const AVAILABLE_MODELS: Model[] = [
   { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7b', provider: 'groq' },
   { id: 'gemma-7b-it', name: 'Gemma 7b', provider: 'groq' },
   { id: 'gemma2-9b-it', name: 'Gemma2 9b', provider: 'groq' },
+  { id: 'claude-3-opus-20240229', name: 'Claude 3 Opus', provider: 'anthropic' },
+  { id: 'claude-3-haiku-20240307', name: 'Claude 3 Haiku', provider: 'anthropic' },
+  { id: 'claude-3-sonnet-20240229', name: 'Claude 3 Sonnet', provider: 'anthropic' },
 ];
 
 interface EvaluationResult {

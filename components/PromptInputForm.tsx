@@ -35,7 +35,7 @@ export default function PromptInputForm({ prompts, onPromptsChange }: PromptInpu
       {prompts.length > 0 && (
         <div>
           <h3 className="text-lg font-meduim mb-2">Added Prompts:</h3>
-          <ScrollArea className="h-[200px] w-full border rounded-md p-4">
+          <ScrollArea className="h-[150px] w-full border rounded-md p-4">
             <ul className="space-y-2">
               {prompts.map((prompt, index) => (
                 <li key={index} className="bg-secondary p-2 rounded">{prompt}</li>
