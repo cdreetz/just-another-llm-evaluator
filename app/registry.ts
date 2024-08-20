@@ -1,4 +1,5 @@
 import { createOpenAI } from "@ai-sdk/openai";
+import { anthropic } from "@ai-sdk/anthropic";
 import { experimental_createProviderRegistry as createProviderRegistry } from "ai";
 
 export function createServerRegistry(){
@@ -11,7 +12,8 @@ export function createServerRegistry(){
   })
   return createProviderRegistry({
     openai: openai,
-    groq: groq
+    groq: groq,
+    anthropic: anthropic
   });
 }
 

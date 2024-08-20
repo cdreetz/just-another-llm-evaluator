@@ -12,10 +12,11 @@ interface ResultsTableProps {
   }>
   selectedModels: Model[]
   isLoading: boolean
+  isInitial: boolean
 }
 
-export default function ResultsTable({ results, selectedModels, isLoading }: ResultsTableProps) {
-  if (results.length === 0 && !isLoading) {
+export default function ResultsTable({ results, selectedModels, isLoading, isInitial }: ResultsTableProps) {
+  if (results.length === 0 && !isLoading && !isInitial) {
     return null
   }
 
@@ -33,22 +34,24 @@ export default function ResultsTable({ results, selectedModels, isLoading }: Res
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isLoading ? (
-            <TableRow>
-              <TableCell colSpan={selectedModels.length + 1}>
-                <div className="space-y-2">
+          {isInitial ? (
+              <TableRow>
+                <TableCell>
                   <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-full" />
-                </div>
-              </TableCell>
-            </TableRow>
+                </TableCell>
+              </TableRow>
           ) : (
             results.map((result, index) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">{result.prompt}</TableCell>
                 {selectedModels.map((model) => (
-                  <TableCell key={model.id}>{result.results[model.id]}</TableCell>
+                  <TableCell key={model.id}>
+                    {isLoading && result.results[model.id] === '' ? (
+                      <Skeleton className="h-4 w-full" />
+                    ) : (
+                      result.results[model.id]
+                    )}
+                  </TableCell>
                 ))}
               </TableRow>
             ))

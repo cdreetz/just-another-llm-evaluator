@@ -1,6 +1,6 @@
 import { useChat, UseChatOptions } from 'ai/react';
 
-export type Provider = 'openai' | 'groq';
+export type Provider = 'openai' | 'groq' | 'anthropic';
 
 export interface Model {
   id: string;

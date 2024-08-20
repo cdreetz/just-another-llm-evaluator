@@ -7,8 +7,9 @@ import PromptInputForm from '@/components/PromptInputForm'
 import EvaluationButton from '@/components/EvaluationButton'
 import ResultsTable from '@/components/ResultsTable'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import InfoButton from '@/components/InfoButton';
 
-export type Provider = 'openai' | 'groq';
+export type Provider = 'openai' | 'groq' | 'anthropic';
 
 export interface Model {
   id: string;
@@ -20,8 +21,16 @@ const AVAILABLE_MODELS: Model[] = [
   { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', provider: 'openai' },
   { id: 'gpt-4', name: 'GPT-4', provider: 'openai' },
   { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', provider: 'openai' },
+  { id: 'gpt-4o', name: 'GPT-4o', provider: 'openai' },
+  { id: 'gpt-4o-mini', name: 'GPT-4o Mini', provider: 'openai' },
   { id: 'llama-3.1-70b-versatile', name: 'Llama-3.1 70b', provider: 'groq' },
+  { id: 'llama-3.1-8b-instant', name: 'Llama-3.1 8b', provider: 'groq' },
   { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7b', provider: 'groq' },
+  { id: 'gemma-7b-it', name: 'Gemma 7b', provider: 'groq' },
+  { id: 'gemma2-9b-it', name: 'Gemma2 9b', provider: 'groq' },
+  { id: 'claude-3-opus-20240229', name: 'Claude 3 Opus', provider: 'anthropic' },
+  { id: 'claude-3-haiku-20240307', name: 'Claude 3 Haiku', provider: 'anthropic' },
+  { id: 'claude-3-sonnet-20240229', name: 'Claude 3 Sonnet', provider: 'anthropic' },
 ];
 
 interface EvaluationResult {
@@ -37,48 +46,67 @@ export default function Home() {
   const [results, setResults] = useState<EvaluationResult[]>([]);
   const [registry, setRegistry] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitial, setIsInitial] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const handleEvaluate = async () => {
+    setIsInitial(false);
     setIsLoading(true);
     setError(null);
 
+    const newResults: EvaluationResult[] = prompts.map(prompt => ({
+      prompt,
+      results: Object.fromEntries(selectedModels.map(model => [model.id, '']))
+    }));
+    setResults(newResults);
+
     try {
-      const newResults: EvaluationResult[] = [];
+      for (let promptIndex = 0; promptIndex < prompts.length; promptIndex++) {
+        const prompt = prompts[promptIndex];
 
-      for (const prompt of prompts) {
-        const promptResult: EvaluationResult = {
-          prompt,
-          results: {}
-        };
-
-        for (const model of selectedModels) {
+        //for (const model of selectedModels) {
+        await Promise.all(selectedModels.map(async (model) => {
           try {
-            const response = await fetch('/api/generate-text', {
+            const response = await fetch('/api/stream-text', {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
+              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 model: `${model.provider}:${model.id}`,
                 prompt: prompt,
               }),
             });
-            if (!response.ok) {
-              throw new Error('API response was not ok');
+
+            if (!response.ok) throw new Error('API response was not ok');
+
+            const reader = response.body?.getReader();
+            const decoder = new TextDecoder();
+
+            let accumulatedText = '';
+
+            while (true) {
+              const result = await reader?.read();
+              if (!result) break;
+              const { done, value } = result;
+              if (done) break;
+              const chunk = decoder.decode(value, { stream: true });
+              accumulatedText += chunk;
+
+              setResults(prevResults => {
+                const newResults = [...prevResults];
+                newResults[promptIndex].results[model.id] = accumulatedText;
+                return newResults;
+              });
             }
-            const data = await response.json();
-            promptResult.results[model.id] = data.text;
           } catch (error) {
             console.error(`Error with model ${model.id}:`, error);
-            promptResult.results[model.id] = 'Error occurred';
+            setResults(prevResults => {
+              const newResults = [...prevResults];
+              newResults[promptIndex].results[model.id] = 'Error occurred';
+              return newResults;
+            });
           }
-        }
-
-        newResults.push(promptResult);
+        }));
       }
-
-      setResults(newResults);
     } catch (error) {
       setError('An error occured during evaluation. Please try again.');
     } finally {
@@ -88,13 +116,14 @@ export default function Home() {
 
   return (
     <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">LLM Evaluations</h1>
+      <InfoButton />
+      <h1 className="text-3xl font-bold mb-6 mt-10 mx-6">LLM Evaluations</h1>
       {error && (
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <div className="space-y-6">
+      <div className="space-y-6 mx-6">
         <div className="flex flex-row w-full border p-4 space-x-2">
           <div className="flex flex-col w-1/2 pr-4">
             <ModelSelectionForm
@@ -109,7 +138,7 @@ export default function Home() {
             onPromptsChange={setPrompts}
           />
         </div>
-        <ResultsTable results={results} selectedModels={selectedModels} isLoading={isLoading} />
+        <ResultsTable results={results} selectedModels={selectedModels} isLoading={isLoading} isInitial={isInitial} />
       </div>
     </main>
   )
