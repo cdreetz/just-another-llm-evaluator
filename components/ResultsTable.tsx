@@ -20,6 +20,8 @@ export default function ResultsTable({ results, selectedModels, isLoading, isIni
     return null
   }
 
+  const modelColumnWidth = selectedModels.length > 0 ? `${85 / selectedModels.length}%` : 'auto'
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Evaluation Results</h2>
@@ -27,16 +29,16 @@ export default function ResultsTable({ results, selectedModels, isLoading, isIni
         <TableCaption>A comparison of LLM outputs for given prompts.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Prompt</TableHead>
+            <TableHead style={{ width: '15%' }}>Prompt</TableHead>
             {selectedModels.map((model) => (
-              <TableHead key={model.id}>{model.name}</TableHead>
+              <TableHead key={model.id} style={{ width: modelColumnWidth }}>{model.name}</TableHead>
             ))}
           </TableRow>
         </TableHeader>
         <TableBody>
           {isInitial ? (
               <TableRow>
-                <TableCell>
+                <TableCell colSpan={selectedModels.length + 1}>
                   <Skeleton className="h-4 w-full" />
                 </TableCell>
               </TableRow>
