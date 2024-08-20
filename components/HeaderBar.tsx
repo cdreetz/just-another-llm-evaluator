@@ -35,6 +35,9 @@ const HeaderBar = () => {
           <DropdownMenuItem>
             <Link href="/chat-with-comparison">LLM Compare</Link>
           </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/transcribe">STT Transcription</Link>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
