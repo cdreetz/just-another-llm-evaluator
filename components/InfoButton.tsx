@@ -13,7 +13,7 @@ import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
 
 export default function InfoButton() {
   return (
-    <div className='absolute top-2 left-4 z-10'>
+    <div className='absolute top-4 left-4 z-10'>
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button variant='outline' size='icon'>

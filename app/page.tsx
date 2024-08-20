@@ -117,7 +117,7 @@ export default function Home() {
   return (
     <main className="container mx-auto p-4">
       <InfoButton />
-      <h1 className="text-3xl font-bold mb-6 mt-10 mx-6">LLM Evaluations</h1>
+      <h1 className="text-3xl font-bold mb-6 mx-6">LLM Evaluations</h1>
       {error && (
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>{error}</AlertDescription>
