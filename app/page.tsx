@@ -51,42 +51,59 @@ export default function Home() {
     setIsLoading(true);
     setError(null);
 
+    const newResults: EvaluationResult[] = prompts.map(prompt => ({
+      prompt,
+      results: Object.fromEntries(selectedModels.map(model => [model.id, '']))
+    }));
+    setResults(newResults);
+
     try {
-      const newResults: EvaluationResult[] = [];
+      for (let promptIndex = 0; promptIndex < prompts.length; promptIndex++) {
+        const prompt = prompts[promptIndex];
 
-      for (const prompt of prompts) {
-        const promptResult: EvaluationResult = {
-          prompt,
-          results: {}
-        };
-
-        for (const model of selectedModels) {
+        //for (const model of selectedModels) {
+        await Promise.all(selectedModels.map(async (model) => {
           try {
-            const response = await fetch('/api/generate-text', {
+            const response = await fetch('/api/stream-text', {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
+              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 model: `${model.provider}:${model.id}`,
                 prompt: prompt,
               }),
             });
-            if (!response.ok) {
-              throw new Error('API response was not ok');
+
+            if (!response.ok) throw new Error('API response was not ok');
+
+            const reader = response.body?.getReader();
+            const decoder = new TextDecoder();
+
+            let accumulatedText = '';
+
+            while (true) {
+              const result = await reader?.read();
+              if (!result) break;
+              const { done, value } = result;
+              if (done) break;
+              const chunk = decoder.decode(value, { stream: true });
+              accumulatedText += chunk;
+
+              setResults(prevResults => {
+                const newResults = [...prevResults];
+                newResults[promptIndex].results[model.id] = accumulatedText;
+                return newResults;
+              });
             }
-            const data = await response.json();
-            promptResult.results[model.id] = data.text;
           } catch (error) {
             console.error(`Error with model ${model.id}:`, error);
-            promptResult.results[model.id] = 'Error occurred';
+            setResults(prevResults => {
+              const newResults = [...prevResults];
+              newResults[promptIndex].results[model.id] = 'Error occurred';
+              return newResults;
+            });
           }
-        }
-
-        newResults.push(promptResult);
+        }));
       }
-
-      setResults(newResults);
     } catch (error) {
       setError('An error occured during evaluation. Please try again.');
     } finally {

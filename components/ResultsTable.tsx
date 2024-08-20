@@ -40,25 +40,18 @@ export default function ResultsTable({ results, selectedModels, isLoading, isIni
                   <Skeleton className="h-4 w-full" />
                 </TableCell>
               </TableRow>
-          ) : isLoading ? (
-            Array.from({ length: 5 }).map((_, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  <Skeleton className="h-4 w-full" />
-                </TableCell>
-                {selectedModels.map((model) => (
-                  <TableCell key={model.id}>
-                    <Skeleton className="h-4 w-full" />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
           ) : (
             results.map((result, index) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">{result.prompt}</TableCell>
                 {selectedModels.map((model) => (
-                  <TableCell key={model.id}>{result.results[model.id]}</TableCell>
+                  <TableCell key={model.id}>
+                    {isLoading && result.results[model.id] === '' ? (
+                      <Skeleton className="h-4 w-full" />
+                    ) : (
+                      result.results[model.id]
+                    )}
+                  </TableCell>
                 ))}
               </TableRow>
             ))
