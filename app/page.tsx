@@ -7,6 +7,7 @@ import PromptInputForm from '@/components/PromptInputForm'
 import EvaluationButton from '@/components/EvaluationButton'
 import ResultsTable from '@/components/ResultsTable'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import InfoButton from '@/components/InfoButton';
 
 export type Provider = 'openai' | 'groq';
 
@@ -20,8 +21,13 @@ const AVAILABLE_MODELS: Model[] = [
   { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', provider: 'openai' },
   { id: 'gpt-4', name: 'GPT-4', provider: 'openai' },
   { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', provider: 'openai' },
+  { id: 'gpt-4o', name: 'GPT-4o', provider: 'openai' },
+  { id: 'gpt-4o-mini', name: 'GPT-4o Mini', provider: 'openai' },
   { id: 'llama-3.1-70b-versatile', name: 'Llama-3.1 70b', provider: 'groq' },
+  { id: 'llama-3.1-8b-instant', name: 'Llama-3.1 8b', provider: 'groq' },
   { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7b', provider: 'groq' },
+  { id: 'gemma-7b-it', name: 'Gemma 7b', provider: 'groq' },
+  { id: 'gemma2-9b-it', name: 'Gemma2 9b', provider: 'groq' },
 ];
 
 interface EvaluationResult {
@@ -37,9 +43,11 @@ export default function Home() {
   const [results, setResults] = useState<EvaluationResult[]>([]);
   const [registry, setRegistry] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitial, setIsInitial] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const handleEvaluate = async () => {
+    setIsInitial(false);
     setIsLoading(true);
     setError(null);
 
@@ -88,13 +96,14 @@ export default function Home() {
 
   return (
     <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">LLM Evaluations</h1>
+      <InfoButton />
+      <h1 className="text-3xl font-bold mb-6 mt-10 mx-6">LLM Evaluations</h1>
       {error && (
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <div className="space-y-6">
+      <div className="space-y-6 mx-6">
         <div className="flex flex-row w-full border p-4 space-x-2">
           <div className="flex flex-col w-1/2 pr-4">
             <ModelSelectionForm
@@ -109,7 +118,7 @@ export default function Home() {
             onPromptsChange={setPrompts}
           />
         </div>
-        <ResultsTable results={results} selectedModels={selectedModels} isLoading={isLoading} />
+        <ResultsTable results={results} selectedModels={selectedModels} isLoading={isLoading} isInitial={isInitial} />
       </div>
     </main>
   )

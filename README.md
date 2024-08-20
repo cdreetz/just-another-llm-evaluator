@@ -5,3 +5,16 @@ Idk I'll write this later just look at the 2 pages and read the code
 Compare models
 
 Compare prompts
+
+
+
+
+
+## TODO
+- model/provider selection dropdown
+- remove selected model button
+- ~~initial results table skeleton~~
+- ~~info button top left on eval page~~
+- info button top left on compare page
+
+

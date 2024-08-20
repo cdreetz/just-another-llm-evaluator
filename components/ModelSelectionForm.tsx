@@ -23,18 +23,20 @@ export default function ModelSelectionForm({
   }
 
   return (
-    <div className="space-y-4 w-full pb-2">
+    <div className="space-y-2 w-full pb-2">
       <h2 className="text-xl font-semibold">Select Models</h2>
-      {availableModels.map((model) => (
-        <div key={model.id} className="flex items-center space-x-2">
-          <Checkbox
-            id={model.id}
-            checked={selectedModels.some(m => m.id === model.id)}
-            onCheckedChange={() => handleModelToggle(model)}
-          />
-          <Label htmlFor={model.id} className="text-sm md:text-md">{model.name} {model.provider}</Label>
-        </div>
-      ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
+        {availableModels.map((model) => (
+          <div key={model.id} className="flex items-center space-x-2">
+            <Checkbox
+              id={model.id}
+              checked={selectedModels.some(m => m.id === model.id)}
+              onCheckedChange={() => handleModelToggle(model)}
+            />
+            <Label htmlFor={model.id} className="text-sm md:text-md">{model.name} {model.provider}</Label>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
