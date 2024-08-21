@@ -8,6 +8,7 @@ import EvaluationButton from '@/components/EvaluationButton'
 import ResultsTable from '@/components/ResultsTable'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import InfoButton from '@/components/InfoButton';
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export type Provider = 'openai' | 'groq' | 'anthropic';
 
@@ -32,11 +33,6 @@ const AVAILABLE_MODELS: Model[] = [
   { id: 'claude-3-haiku-20240307', name: 'Claude 3 Haiku', provider: 'anthropic' },
   { id: 'claude-3-sonnet-20240229', name: 'Claude 3 Sonnet', provider: 'anthropic' },
 ];
-
-
-
-
-
 
 interface EvaluationResult {
   prompt: string;
@@ -131,29 +127,31 @@ export default function Home() {
           <li>Click Evaluate and wait for the generated responses</li>
         </ol>
       </InfoButton>
-      <h1 className="text-3xl font-bold mb-6 mx-6">LLM Evaluations</h1>
+      <h1 className="text-3xl font-bold mb-6">LLM Evaluations</h1>
       {error && (
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <div className="space-y-6 mx-6">
-        <div className="flex flex-row w-full border p-4 space-x-2">
-          <div className="flex flex-col w-1/2 pr-4">
-            <ModelSelectionForm
-              availableModels={AVAILABLE_MODELS}
-              selectedModels={selectedModels}
-              onModelSelectionChange={setSelectedModels}
-            />
-            <EvaluationButton onEvaluate={handleEvaluate} isLoading={isLoading} />
-          </div>
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="border rounded-lg p-4">
+          <ModelSelectionForm
+            availableModels={AVAILABLE_MODELS}
+            selectedModels={selectedModels}
+            onModelSelectionChange={setSelectedModels}
+          />
+          <EvaluationButton onEvaluate={handleEvaluate} isLoading={isLoading}  />
+        </div>
+        <div className="border rounded-lg p-4">
           <PromptInputForm
             prompts={prompts}
             onPromptsChange={setPrompts}
           />
         </div>
-        <ResultsTable results={results} selectedModels={selectedModels} isLoading={isLoading} isInitial={isInitial} />
       </div>
+      <ScrollArea className="h-[400px] border rounded-lg p-4">
+        <ResultsTable results={results} selectedModels={selectedModels} isLoading={isLoading} isInitial={isInitial} />
+      </ScrollArea>
     </main>
   )
 }

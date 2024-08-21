@@ -104,14 +104,14 @@ export default function TranscribePage() {
           <li>Wait for the transcription to finish</li>
         </ol>
       </InfoButton>
-      <h1 className="text-3xl font-bold mb-6 mx-6">Audio Transcription</h1>
+      <h1 className="text-3xl font-bold mb-6">Audio Transcription</h1>
       {error && (
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <div className="flex space-x-6 mx-6">
-        <div className="w-1/3 space-y-4 border p-4">
+      <div className="flex space-x-6">
+        <div className="w-1/3 space-y-4 border rounded-lg p-4">
           <Input
             type="file"
             accept="audio/*"
@@ -174,7 +174,7 @@ export default function TranscribePage() {
             {isLoading ? 'Transcribing...' : 'Transcribe Audio'}
           </Button>
         </div>
-        <div className="w-2/3 border p-4">
+        <div className="w-2/3 border rounded-lg p-4">
           <h2 className="text-xl font-semibold mb-2">Transcription Result:</h2>
           <Textarea
             value={transcription}
