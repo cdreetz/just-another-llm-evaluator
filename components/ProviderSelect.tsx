@@ -23,6 +23,7 @@ export function ProviderSelect({ provider, model, onProviderChange, onModelChang
         <SelectContent>
           <SelectItem value="openai">OpenAI</SelectItem>
           <SelectItem value="groq">Groq</SelectItem>
+          <SelectItem value="anthropic">Anthropic</SelectItem>
         </SelectContent>
       </Select>
       <Select onValueChange={onModelChange} value={model}>

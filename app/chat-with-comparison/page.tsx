@@ -7,6 +7,7 @@ import { ProviderSelect } from '../../components/ProviderSelect';
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import InfoButton from '@/components/InfoButton';
 
 export default function DualChat() {
   const [provider1, setProvider1] = useState<Provider>('openai');
@@ -32,7 +33,16 @@ export default function DualChat() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <main className="container mx-auto p-4">
+      <InfoButton
+        title="LLM Evaluations"
+        className="absolute top-4 left-4 z-10"
+      >
+        <ol className="list-decimal pl-4">
+          <li>Select two models you want to compare</li>
+          <li>Start chatting with the models like you normally would</li>
+        </ol>
+      </InfoButton>
       <h1 className="text-3xl font-bold mb-6">Dual Model Chat Comparison</h1>
       <div className="grid grid-cols-2 gap-4 mb-4">
         {[
@@ -50,7 +60,7 @@ export default function DualChat() {
               }} 
               onModelChange={chatConfig.setModel}
             />
-            <ScrollArea className="h-[500px] mt-4">
+            <ScrollArea className="h-[400px] mt-4">
               {chatConfig.chat.messages.map((m) => (
                 <div key={m.id} className="whitespace-pre-wrap mb-4">
                   <strong>{m.role === 'user' ? 'User: ' : 'AI: '}</strong>
@@ -72,6 +82,6 @@ export default function DualChat() {
           <Button type="submit">Send</Button>
         </div>
       </form>
-    </div>
+    </main>
   );
 }

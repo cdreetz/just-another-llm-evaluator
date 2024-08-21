@@ -10,10 +10,17 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
+import { ReactNode } from 'react';
 
-export default function InfoButton() {
+interface InfoButtonProps {
+  title: string;
+  children: ReactNode;
+  className?: string;
+}
+
+export default function InfoButton({ title, children, className = 'absolute top-4 left-4 z-10' }: InfoButtonProps) {
   return (
-    <div className='absolute top-2 left-4 z-10'>
+    <div className={className}>
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button variant='outline' size='icon'>
@@ -22,13 +29,9 @@ export default function InfoButton() {
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>How to Use This Page</AlertDialogTitle>
+            <AlertDialogTitle>{title}</AlertDialogTitle>
             <AlertDialogDescription>
-              <ol className='list-decimal list-inside space-y-2'>
-                <li>Select the models you want to compare</li>
-                <li>Add the prompts you want to evaluate for</li>
-                <li>Run the evaluation and wait for all the responses to generate</li>
-              </ol>
+              {children}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

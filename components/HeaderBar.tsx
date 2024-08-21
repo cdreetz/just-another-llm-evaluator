@@ -10,13 +10,21 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 
-const NavMenu = () => {
+const HeaderBar = () => {
   return (
-    <div className="absolute top-4 right-4">
+    <header className="flex justify-end items-center p-4 bg-background">
+      <Link 
+        href="https://github.com/cdreetz/just-another-llm-evaluator" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="mr-4"
+      >
+        <DiGithubBadge className="h-6 w-6" />
+      </Link>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon">
-            <Menu className="h-[1.2rem] w-[1.2rem]" />
+            <Menu className="h-5 w-5" />
             <span className="sr-only">Toggle menu</span>
           </Button>
         </DropdownMenuTrigger>
@@ -28,14 +36,12 @@ const NavMenu = () => {
             <Link href="/chat-with-comparison">LLM Compare</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="https://github.com/cdreetz/just-another-llm-evaluator" target="_blank" rel="noopener noreferrer">
-              <DiGithubBadge className="h-[1.2rem] w-[1.2rem] mr-2" />
-            </Link>
+            <Link href="/transcribe">STT Transcription</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
+    </header>
   );
 };
 
-export default NavMenu;
+export default HeaderBar;
