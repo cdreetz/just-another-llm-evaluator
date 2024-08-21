@@ -22,10 +22,11 @@ export async function POST(request: NextRequest) {
     const responseFormat = formData.get('responseFormat') as string | null;
     const temperature = formData.get('temperature') as string | null;
     const language = formData.get('language') as string | null;
+    const model = formData.get('model') as string | null;
 
     const transcriptionOptions: any = {
       file: new File([buffer], file.name, { type: file.type }),
-      model: "distil-whisper-large-v3-en",
+      model: model === 'distil-whisper-large-v3-en' ? 'distil-whisper-large-v3-en' : 'whisper-large-v3',
     };
 
     // Add optional parameters if provided
@@ -46,6 +47,7 @@ export async function POST(request: NextRequest) {
     } else {
       // Default to JSON response with just the text
       return NextResponse.json({ text: transcription.text });
+      //return NextResponse.json({ text: JSON.stringify(transcription) });
     }
   } catch (error) {
     console.error('Transcription error:', error);

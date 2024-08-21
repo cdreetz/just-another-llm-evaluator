@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,10 +19,31 @@ export default function TranscribePage() {
   const [language, setLanguage] = useState('');
   const [prompt, setPrompt] = useState('');
   const [temperature, setTemperature] = useState('');
+  const [fileDetails, setFileDetails] = useState<{ name: string; duration: string; transcriptionTime: string } | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [model, setModel] = useState('whisper-large-v3');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setFile(event.target.files[0]);
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+      setFileDetails(null); // Reset file details when a new file is selected
+
+      // Create a URL for the audio file
+      const audioUrl = URL.createObjectURL(selectedFile);
+      if (audioRef.current) {
+        audioRef.current.src = audioUrl;
+        audioRef.current.onloadedmetadata = () => {
+          const duration = audioRef.current?.duration || 0;
+          const minutes = Math.floor(duration / 60);
+          const seconds = Math.floor(duration % 60);
+          setFileDetails({
+            name: selectedFile.name,
+            duration: `${minutes}:${seconds.toString().padStart(2, '0')}`,
+            transcriptionTime: '',
+          });
+        };
+      }
     }
   };
 
@@ -34,6 +55,7 @@ export default function TranscribePage() {
 
     setIsLoading(true);
     setError('');
+    const startTime = Date.now();
 
     try {
       const formData = new FormData();
@@ -42,6 +64,7 @@ export default function TranscribePage() {
       if (language) formData.append('language', language);
       if (prompt) formData.append('prompt', prompt);
       if (temperature) formData.append('temperature', temperature);
+      formData.append('model', model);
 
       const response = await fetch('/api/transcribe', {
         method: 'POST',
@@ -54,6 +77,13 @@ export default function TranscribePage() {
 
       const data = await response.json();
       setTranscription(verboseJson ? JSON.stringify(data, null, 2) : data.text);
+
+      const endTime = Date.now();
+      const transcriptionTime = ((endTime - startTime) / 1000).toFixed(2);
+      setFileDetails(prevDetails => ({
+        ...prevDetails!,
+        transcriptionTime: `${transcriptionTime} seconds`,
+      }));
     } catch (err) {
       setError('An error occurred during transcription. Please try again.');
     } finally {
@@ -63,7 +93,17 @@ export default function TranscribePage() {
 
   return (
     <main className="container mx-auto p-4">
-      <InfoButton />
+       <InfoButton
+        title="LLM Evaluations"
+        className="absolute top-4 left-4 z-10"
+      >
+        <ol className="list-decimal pl-4">
+          <li>Select an audio file</li>
+          <li>Select any optional settings if you want</li>
+          <li>Click Transcribe Audio</li>
+          <li>Wait for the transcription to finish</li>
+        </ol>
+      </InfoButton>
       <h1 className="text-3xl font-bold mb-6 mx-6">Audio Transcription</h1>
       {error && (
         <Alert variant="destructive" className="mb-4">
@@ -78,6 +118,25 @@ export default function TranscribePage() {
             onChange={handleFileChange}
             className="mb-4"
           />
+          {fileDetails && (
+            <div className="mb-4 p-2 bg-gray-100 rounded">
+              <h3 className="font-semibold">File Details:</h3>
+              <p>Name: {fileDetails.name}</p>
+              <p>Duration: {fileDetails.duration}</p>
+              {fileDetails.transcriptionTime && (
+                <p>Time to transcribe: {fileDetails.transcriptionTime}</p>
+              )}
+            </div>
+          )}
+          <Select onValueChange={setModel} value={model}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Model" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="whisper-large-v3">Whisper Large v3</SelectItem>
+              <SelectItem value="distil-whisper-large-v3-en">Distil Whisper Large v3 (English)</SelectItem>
+            </SelectContent>
+          </Select>
           <div className="flex items-center space-x-2">
             <Switch
               id="verbose-json"
@@ -125,6 +184,7 @@ export default function TranscribePage() {
           />
         </div>
       </div>
+      <audio ref={audioRef} style={{ display: 'none' }} />
     </main>
   );
 }

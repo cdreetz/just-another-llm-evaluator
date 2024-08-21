@@ -33,6 +33,11 @@ const AVAILABLE_MODELS: Model[] = [
   { id: 'claude-3-sonnet-20240229', name: 'Claude 3 Sonnet', provider: 'anthropic' },
 ];
 
+
+
+
+
+
 interface EvaluationResult {
   prompt: string;
   results: {
@@ -116,7 +121,16 @@ export default function Home() {
 
   return (
     <main className="container mx-auto p-4">
-      <InfoButton />
+      <InfoButton
+        title="LLM Evaluations"
+        className="absolute top-4 left-4 z-10"
+      >
+        <ol className="list-decimal pl-4">
+          <li>Select the models you want to compare</li>
+          <li>Enter prompts you want to evaluate for</li>
+          <li>Click Evaluate and wait for the generated responses</li>
+        </ol>
+      </InfoButton>
       <h1 className="text-3xl font-bold mb-6 mx-6">LLM Evaluations</h1>
       {error && (
         <Alert variant="destructive" className="mb-4">
