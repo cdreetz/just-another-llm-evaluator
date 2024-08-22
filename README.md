@@ -38,6 +38,9 @@ Transcribe audio
 - ~~stt page with Groq whisper~~
 - transcription optional arguments
 
+- lambda chat api support
+- hermes 3 models added
+
 v0.2.0
 - auth / sign up / login pages
 - save prompt collection
