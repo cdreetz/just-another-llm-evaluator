@@ -38,6 +38,9 @@ const HeaderBar = () => {
           <DropdownMenuItem>
             <Link href="/transcribe">STT Transcription</Link>
           </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/audio-analytics">Audio Analytics</Link>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
