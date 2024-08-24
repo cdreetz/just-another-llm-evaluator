@@ -31,18 +31,33 @@ Transcribe audio
 - ~~fix margin of header icons~~
 - ~~add all model options to the dual llm comparison chat~~
 
-
 - about page
 - feedback / submit bug / feature request 
 
 - ~~stt page with Groq whisper~~
-- transcription optional arguments
+- ~~transcription optional arguments~~
 
 - lambda chat api support
 - hermes 3 models added
+
+- upload 'vibe check list' button
 
 v0.2.0
 - auth / sign up / login pages
 - save prompt collection
 
+- saved 'vibe check list'
+- saved eval runs
+- 
 
+
+
+v0.3.0
+- API access
+- batch audio processing
+- 
+
+
+
+v1.0.0
+- create documentation
