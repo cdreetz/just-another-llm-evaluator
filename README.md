@@ -20,8 +20,8 @@ Transcribe audio
 - ~~remove selected model button~~
 - ~~initial results table skeleton~~
 - ~~info button top left on eval page~~
-- info button top left on compare page
-- info button top left on transcription page
+- ~~info button top left on compare page~~
+- ~~info button top left on transcription page~~
 - ~~header component with the nav dropdown and github icon link~~
 - ? or just add the github link to the dropdown?
 - ~~parallel requests and streaming for compare page~~
@@ -40,7 +40,9 @@ Transcribe audio
 - lambda chat api support
 - hermes 3 models added
 
-- upload 'vibe check list' button
+- ~~upload 'vibe check list' button~~
+
+- Markdown rendering for responses
 
 v0.2.0
 - auth / sign up / login pages

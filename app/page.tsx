@@ -125,6 +125,8 @@ export default function Home() {
           <li>Select the models you want to compare</li>
           <li>Enter prompts you want to evaluate for</li>
           <li>Click Evaluate and wait for the generated responses</li>
+          <br />
+          <ul>* Upload a .txt file with prompts you want to evaluate for</ul>
         </ol>
       </InfoButton>
       <h1 className="text-3xl font-bold mb-6">LLM Evaluations</h1>
