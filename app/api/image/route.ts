@@ -50,6 +50,10 @@ export async function POST(req: Request) {
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error processing image:', error);
-    return NextResponse.json({ error: 'Error processing image', details: error.message }, { status: 500 });
+    if (error instanceof Error) {
+      return NextResponse.json({ error: 'Error processing image', details: error.message }, { status: 500 });
+    } else {
+      return NextResponse.json({ error: 'Error processing image', details: 'An unknown error occurred' }, { status: 500 });
+    }
   }
 }
