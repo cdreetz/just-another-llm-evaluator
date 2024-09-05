@@ -65,7 +65,6 @@ export default function Home() {
       for (let promptIndex = 0; promptIndex < prompts.length; promptIndex++) {
         const prompt = prompts[promptIndex];
 
-        //for (const model of selectedModels) {
         await Promise.all(selectedModels.map(async (model) => {
           try {
             const response = await fetch('/api/stream-text', {
@@ -135,7 +134,7 @@ export default function Home() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div className="border rounded-lg p-4">
           <ModelSelectionForm
             availableModels={AVAILABLE_MODELS}
@@ -151,7 +150,7 @@ export default function Home() {
           />
         </div>
       </div>
-      <ScrollArea className="h-[400px] border rounded-lg p-4">
+      <ScrollArea className="h-[400px] md:h-[600px] border rounded-lg p-4">
         <ResultsTable results={results} selectedModels={selectedModels} isLoading={isLoading} isInitial={isInitial} />
       </ScrollArea>
     </main>
