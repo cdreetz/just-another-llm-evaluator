@@ -87,8 +87,8 @@ export default function VisionPage() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <div className="flex space-x-6">
-        <div className="w-1/3 space-y-4 border rounded-lg p-4">
+      <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
+        <div className="w-full md:w-1/3 space-y-4 border rounded-lg p-4">
           <Input
             type="file"
             accept="image/*"
@@ -107,7 +107,7 @@ export default function VisionPage() {
             {isLoading ? 'Processing...' : 'Process Image'}
           </Button>
         </div>
-        <div className="w-2/3 border rounded-lg p-4">
+        <div className="w-full md:w-2/3 border rounded-lg p-4">
           <h2 className="text-xl font-semibold mb-2">Result:</h2>
           <Textarea
             value={result}
