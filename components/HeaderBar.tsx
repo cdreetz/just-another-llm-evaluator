@@ -39,10 +39,13 @@ const HeaderBar = () => {
             <Link href="/chat-with-comparison">LLM Compare</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/transcribe">STT Transcription</Link>
+            <Link href="/transcribe">Audio</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link href="/audio-analytics">Audio Analytics</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/vision">Vision</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link href="https://github.com/cdreetz/just-another-llm-evaluator/issues/new">Support</Link>

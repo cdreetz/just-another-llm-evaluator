@@ -11,7 +11,7 @@ function HeroSection() {
   return (
     <section className="py-20 px-4 text-center">
       <h1 className="text-4xl font-bold mb-4">Just Another LLM Evaluator</h1>
-      <p className="text-xl mb-8">Unfortunately this is nothing special, just a place to try out different models</p>
+      <p className="text-xl mb-8">Unfortunately this is nothing special, just another LLM evaluator..</p>
       <Link href="/chat-with-comparison">
         <Button size="lg">
           Get Started
@@ -27,7 +27,7 @@ function Footer() {
     <footer className="py-8 px-4 text-center absolute bottom-0 left-0 right-0">
       <h2 className="text-2xl font-semibold mb-4">Featured</h2>
       <div className="flex justify-center items-center">
-        {/* <Image src="/Groq_Logo_24.svg" alt="Groq Logo" width={100} height={34} /> */}
+        <Image src="/groq.svg" alt="Groq Logo" width={100} height={34} />
       </div>
     </footer>
   )
