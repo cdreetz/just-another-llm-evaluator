@@ -9,6 +9,7 @@ export function createServerRegistry(){
   const groq = createOpenAI({
     baseURL: 'https://api.groq.com/openai/v1',
     apiKey: process.env.GROQ_API_KEY,
+    compatibility: 'strict',
   })
   return createProviderRegistry({
     openai: openai,
