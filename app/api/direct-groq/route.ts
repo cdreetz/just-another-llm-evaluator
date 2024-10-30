@@ -33,11 +33,33 @@ export async function POST(req: NextRequest) {
     return new Response(
       new ReadableStream({
         async start(controller) {
-          for await (const chunk of stream) {
-            const content = chunk.choices[0]?.delta?.content || "";
-            controller.enqueue(content);
+          let lastChunk;
+          try {
+            for await (const chunk of stream) {
+              const content = chunk.choices[0]?.delta?.content || "";
+              if (content) {
+                controller.enqueue(content);
+              }
+              lastChunk = chunk;
+            }
+
+            // After the stream is complete, send the metrics
+            if (lastChunk?.x_groq?.usage) {
+              console.log('Sending metrics:', lastChunk.x_groq.usage); // Debug log
+              const metricsMessage = `\n__METRICS__${JSON.stringify({
+                __metrics: {
+                  completion_time: lastChunk.x_groq.usage.completion_time,
+                  completion_tokens: lastChunk.x_groq.usage.completion_tokens,
+                  total_tokens: lastChunk.x_groq.usage.total_tokens
+                }
+              })}`;
+              controller.enqueue(metricsMessage);
+            }
+          } catch (error) {
+            console.error('Error in stream processing:', error);
+          } finally {
+            controller.close();
           }
-          controller.close();
         },
       }),
       {

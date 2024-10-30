@@ -4,10 +4,10 @@ import { useState } from "react";
 import ModelSelectionForm from "@/components/ModelSelectionForm";
 import PromptInputForm from "@/components/PromptInputForm";
 import EvaluationButton from "@/components/EvaluationButton";
-import ResultsTable from "@/components/ResultsTable";
+import ResultsTable2 from "@/components/ResultsTable2";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import InfoButton from "@/components/InfoButton";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export type Provider = "groq" | "openai" | "anthropic";
 
@@ -32,10 +32,19 @@ const AVAILABLE_MODELS: Model[] = [
   { id: "gemma2-9b-it", name: "Gemma2 9b", provider: "groq" },
 ];
 
+interface ModelMetrics {
+  completion_time: number;
+  completion_tokens: number;
+  total_tokens: number;
+}
+
 interface EvaluationResult {
   prompt: string;
   results: {
     [modelId: string]: string;
+  };
+  metrics: {
+    [modelId: string]: ModelMetrics;
   };
 }
 
@@ -55,6 +64,7 @@ export default function Home() {
     const newResults: EvaluationResult[] = prompts.map((prompt) => ({
       prompt,
       results: Object.fromEntries(selectedModels.map((model) => [model.id, ""])),
+      metrics: Object.fromEntries(selectedModels.map((model) => [model.id, {} as ModelMetrics])),
     }));
     setResults(newResults);
 
@@ -87,13 +97,30 @@ export default function Home() {
                 const { done, value } = result;
                 if (done) break;
                 const chunk = decoder.decode(value, { stream: true });
-                accumulatedText += chunk;
-
-                setResults((prevResults) => {
-                  const newResults = [...prevResults];
-                  newResults[promptIndex].results[model.id] = accumulatedText;
-                  return newResults;
-                });
+                
+                if (chunk.includes('__METRICS__')) {
+                  const [text, metricsStr] = chunk.split('__METRICS__');
+                  accumulatedText += text;
+                  
+                  try {
+                    const { __metrics } = JSON.parse(metricsStr);
+                    setResults((prevResults) => {
+                      const newResults = [...prevResults];
+                      newResults[promptIndex].metrics[model.id] = __metrics;
+                      newResults[promptIndex].results[model.id] = accumulatedText;
+                      return newResults;
+                    });
+                  } catch (e) {
+                    console.error('Error parsing metrics:', e);
+                  }
+                } else {
+                  accumulatedText += chunk;
+                  setResults((prevResults) => {
+                    const newResults = [...prevResults];
+                    newResults[promptIndex].results[model.id] = accumulatedText;
+                    return newResults;
+                  });
+                }
               }
             } catch (error) {
               console.error(`Error with model ${model.id}:`, error);
@@ -116,7 +143,7 @@ export default function Home() {
   return (
     <main className="container mx-auto p-4">
       <InfoButton
-        title="LLM Evaluations"
+        title="LLM Evaluations Groq"
         className="absolute top-4 left-4 z-10"
       >
         <ol className="list-decimal pl-4">
@@ -127,7 +154,7 @@ export default function Home() {
           <ul>* Upload a .txt file with prompts you want to evaluate for</ul>
         </ol>
       </InfoButton>
-      <h1 className="text-3xl font-bold mb-6">LLM Evaluations</h1>
+      <h1 className="text-3xl font-bold mb-6">LLM Evaluations Groq</h1>
       {error && (
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>{error}</AlertDescription>
@@ -147,12 +174,13 @@ export default function Home() {
         </div>
       </div>
       <ScrollArea className="h-[400px] md:h-[600px] border rounded-lg p-4">
-        <ResultsTable
+        <ResultsTable2
           results={results}
           selectedModels={selectedModels}
           isLoading={isLoading}
           isInitial={isInitial}
         />
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </main>
   );

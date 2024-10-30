@@ -36,6 +36,9 @@ const HeaderBar = () => {
             <Link href="/llm-eval">LLM Eval</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
+            <Link href="/llm-eval2">LLM Eval Groq</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
             <Link href="/chat-with-comparison">LLM Compare</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
