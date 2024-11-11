@@ -22,7 +22,10 @@ const NavMenu = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem>
-            <Link href="/">LLM Eval</Link>
+            <Link href="/">LLM Eval All</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/llm-eval2">LLM Eval Groq</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link href="/chat-with-comparison">LLM Compare</Link>
