@@ -12,7 +12,7 @@ function HeroSection() {
     <section className="py-20 px-4 text-center">
       <h1 className="text-4xl font-bold mb-4">Just Another LLM Evaluator</h1>
       <p className="text-xl mb-8">Unfortunately this is nothing special, just another LLM evaluator..</p>
-      <Link href="/chat-with-comparison">
+      <Link href="/llm-eval2">
         <Button size="lg">
           Get Started
           <ArrowRight className="ml-2 h-4 w-4" />
