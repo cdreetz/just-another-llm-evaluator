@@ -18,6 +18,9 @@ export interface Model {
 }
 
 const AVAILABLE_MODELS: Model[] = [
+  { id: "llama-3.3-70b-specdec", name: "Llama-3.3 70b Speculative Decoding", provider: "groq" },
+  { id: "llama-3.1-70b-specdec", name: "Llama-3.1 70b Speculative Decoding", provider: "groq" },
+  { id: "llama-3.3-70b-versatile", name: "Llama-3.3 70b", provider: "groq" },
   { id: "llama-3.2-1b-preview", name: "Llama-3.2 1B Preview", provider: "groq" },
   { id: "llama-3.2-3b-preview", name: "Llama-3.2 3B Preview", provider: "groq" },
   { id: "llama3-groq-8b-8192-tool-use-preview", name: "Llama-3 Groq 8B Tool Use", provider: "groq" },
